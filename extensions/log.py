@@ -33,7 +33,7 @@ class Log(commands.Cog):
   def wrap(self, content:str, author:disnake.User, channel:disnake.abc.Messageable):
     """ Format log data consistently """
     if isinstance(channel, disnake.TextChannel):
-      return f"[{self.truncate(channel.guild.name, 10)}#{self.truncate(channel.name, 20)}] {self.truncate(author.name, 10)}#{author.discriminator}: {self.truncate(content)}"
+      return f"[{self.truncate(channel.guild.name, 10)}#{self.truncate(channel.name, 20)}] {self.truncate(str(author.id), 20)}#{author.discriminator}: {self.truncate(content)}"
     if isinstance(channel, disnake.DMChannel):
       if channel.recipient:
         return f"[DM({self.truncate(channel.recipient.name, 10)}#{channel.recipient.discriminator})] {author.name}#{author.discriminator}: {self.truncate(content)}"
