@@ -3,11 +3,13 @@
   Features: to file, to channel, command, responses to a command, errors, misc
   Recommended cogs: Error
 """
-from datetime import datetime
+
 import traceback
 from typing import Union
 import disnake
 from disnake.ext import commands
+
+from datetime import datetime, timezone, timedelta
 
 class Log(commands.Cog):
   """ Record messages, commands and errors to file or a discord channel """
@@ -32,15 +34,16 @@ class Log(commands.Cog):
 
   def wrap(self, content:str, author:disnake.User, channel:disnake.abc.Messageable):
     """ Format log data consistently """
+    dt = datetime.now(timezone(timedelta(hours = 7))).strftime("%Y-%m-%d %H:%M:%S")
     if isinstance(channel, disnake.TextChannel):
-      return f"Date: {str(datetime.now())} [{self.truncate(channel.guild.name, 10)}#{self.truncate(channel.name, 20)}] ID: {self.truncate(str(author.id), 20)} ({self.truncate(author.name)}#{author.discriminator}): {self.truncate(content)}"
+      return f"{str(dt)}, [{self.truncate(channel.guild.name, 10)}#{self.truncate(channel.name, 20)}], {str(author.id)}, {self.truncate(author.name, 10)}#{author.discriminator}, {self.truncate(content)}"
     if isinstance(channel, disnake.DMChannel):
       if channel.recipient:
-        return f"Date: {str(datetime.now())} [DM({self.truncate(channel.recipient.name, 10)}#{channel.recipient.discriminator})] ID: {self.truncate(str(author.id, 20))} ({self.truncate(author.name)}#{author.discriminator}): {self.truncate(content)}"
-      return f"Date: {str(datetime.now())} [DM] ID: {self.truncate(str(author.id), 20)} ({self.truncate(author.name, 20)}#{author.discriminator}): {self.truncate(content)}"
+        return f"{str(dt)}, [DM({self.truncate(channel.recipient.name, 10)}#{channel.recipient.discriminator})], {str(author.id)}, {author.name}#{author.discriminator}, {self.truncate(content)}"
+      return f"{str(dt)}, [DM], {str(author.id)}, {self.truncate(author.name, 10)}#{author.discriminator}, {self.truncate(content)}"
     if isinstance(channel, disnake.Thread):
-      return f"Date: {str(datetime.now())} [Thread] ID: {self.truncate(str(author.id), 20)} ({self.truncate(author.name, 20)}#{author.discriminator}): {self.truncate(content)}"
-    return f"Date: {str(datetime.now())} [Unknown] ID: {self.truncate(str(author.id), 20)} ({self.truncate(author.name,20)}#{author.discriminator}): {self.truncate(content)}"
+      return f"{str(dt)}, [Thread], {str(author.id)}, {self.truncate(author.name, 10)}#{author.discriminator}, {self.truncate(content)}"
+    return f"{str(dt)}, [Unknown], {str(author.id)}, {self.truncate(author.name, 10)}#{author.discriminator}, {self.truncate(content)}"
 
   @commands.Cog.listener('on_command')
   async def log_command(self, ctx:commands.Context):

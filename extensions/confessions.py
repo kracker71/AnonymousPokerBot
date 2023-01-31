@@ -854,7 +854,7 @@ class Confessions(commands.Cog):
 
 	@commands.cooldown(1, 1)
 	@commands.slash_command()
-	async def confess(
+	async def ask(
 		self,
 		inter: disnake.GuildCommandInteraction,
 		content:Optional[str] = None,
@@ -931,8 +931,8 @@ class Confessions(commands.Cog):
 			)
 
 	@commands.cooldown(1, 1)
-	@commands.slash_command(name='confess-to')
-	async def confess_to(
+	@commands.slash_command(name='ask-to')
+	async def ask_to(
 		self,
 		inter:disnake.GuildCommandInteraction,
 		channel:str,
@@ -955,10 +955,10 @@ class Confessions(commands.Cog):
 			targetchannel = await self.safe_fetch_channel(inter, channel_id)
 			if targetchannel is None:
 				return
-			await self.confess(inter, content, image, channel=targetchannel)
+			await self.ask(inter, content, image, channel=targetchannel)
 		else:
 			raise commands.BadArgument("Channel must be selected from the list")
-	@confess_to.autocomplete('channel')
+	@ask_to.autocomplete('channel')
 	async def channel_ac(self, inter:disnake.GuildCommandInteraction, search:str):
 		""" Lists available channels, allows searching by name """
 		if not isinstance(inter.author, disnake.Member):
