@@ -35,6 +35,7 @@ class Admin(commands.Cog):
     )
 
   @commands.Cog.listener("on_message")
+  @commands.default_member_permissions(manage_guild=True, moderate_members=True)
   async def janitor_autodelete(self, message):
     """janitor service, deletes messages after 30 seconds"""
     if f"{message.channel.id}_janitor" in self.bot.config['admin']:
@@ -44,6 +45,7 @@ class Admin(commands.Cog):
         await message.delete()
 
   @commands.slash_command()
+  @commands.default_member_permissions(manage_guild=True, moderate_members=True)
   async def janitor(self, inter:disnake.GuildCommandInteraction, action:JanitorAction, strict:bool=False):
     """
       Add or remove janitor from this channel. Janitor deletes messages after 30 seconds
@@ -67,6 +69,7 @@ class Admin(commands.Cog):
       await inter.send(self.bot.babel(inter, 'admin', 'janitor_unset_success'))
 
   @commands.slash_command()
+  @commands.default_member_permissions(manage_guild=True, moderate_members=True)
   async def clean(
     self,
     inter:disnake.GuildCommandInteraction,
