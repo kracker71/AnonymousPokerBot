@@ -1080,6 +1080,7 @@ class Confessions(commands.Cog):
 
 	@commands.guild_only()
 	@commands.slash_command()
+	@commands.default_member_permissions(manage_guild=True, moderate_members=True)
 	async def imagesupport(self, inter:disnake.GuildCommandInteraction, toggle:Toggle):
 		"""
 		Enable or disable images in confessions
