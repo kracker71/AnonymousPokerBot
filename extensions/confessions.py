@@ -1009,11 +1009,7 @@ class Confessions(commands.Cog):
 		modestring = (
 			'setsuccess'+str(mode) if mode>ChannelType.none else 'unsetsuccess'+str(wastype)
 		)
-		await inter.send(
-			self.bot.babel(inter, 'confessions', modestring) +' '+ \
-			self.bot.babel(inter, 'confessions', 'setundo' if mode>ChannelType.none else 'unsetundo') + \
-			('\n'+self.bot.babel(inter, 'confessions', 'setcta') if mode>ChannelType.none else '')
-		)
+		await inter.send(f'ขณะนี้ ช่องแชทนี้สามารถใช้บอทในการถามคำถามได้แล้ว เริ่มใช้โดยพิม /ask ในช่องแชทนี้แล้วเริ่มถามคำถามกันได้เลย!!')
 
 	@commands.slash_command()
 	async def list(self, inter:disnake.ApplicationCommandInteraction):
