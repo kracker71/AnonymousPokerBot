@@ -110,7 +110,7 @@ class ConfessionData:
 
 		if embed:
 			self.content = \
-				embed.description[20:] if embed.description.startswith('**[Anon-')\
+				embed.description[20:] if embed.description.startswith('**[Poker-')\
 				else embed.description
 			self.image = embed.image.url if embed.image else None
 
@@ -490,7 +490,7 @@ class Confessions(commands.Cog):
 				return
 
 			anonid = self.confessions.get_anonid(channel.guild.id, inter.author.id)
-			lead = f"**[Anon-*{anonid}*]**"
+			lead = f"**[Poker-*{anonid}*]**"
 			channeltype = self.confessions.bot.config.getint(
 				'confessions',
 				f"{channel.guild.id}_{channel.id}"
@@ -703,7 +703,7 @@ class Confessions(commands.Cog):
 				'confessions',
 				f"{self.pendingconfession.targetchannel.guild.id}_{self.pendingconfession.targetchannel.id}"
 			)
-			lead = f"**[Anon-*{anonid}*]**"
+			lead = f"**[Poker-*{anonid}*]**"
 
 			vetting = self.confessions.findvettingchannel(inter.guild)
 			self.pendingconfession.generate_embed(
@@ -760,7 +760,7 @@ class Confessions(commands.Cog):
 
 			if accepted:
 				anonid = self.get_anonid(inter.guild.id, pendingconfession.author.id)
-				lead = f"**[Anon-*{anonid}*]**"
+				lead = f"**[Poker-*{anonid}*]**"
 				channeltype = self.bot.config.getint(
 					'confessions',
 					f"{inter.guild.id}_{pendingconfession.targetchannel_id}"
@@ -880,7 +880,7 @@ class Confessions(commands.Cog):
 			return
 
 		anonid = self.get_anonid(inter.guild_id, inter.author.id)
-		lead = f"**[Anon-*{anonid}*]**"
+		lead = f"**[Poker-*{anonid}*]**"
 		channeltype = self.bot.config.getint('confessions', f"{inter.guild_id}_{channel.id}")
 
 		if not self.check_banned(inter.guild_id, anonid):
@@ -976,6 +976,8 @@ class Confessions(commands.Cog):
 
 	@commands.guild_only()
 	@commands.slash_command()
+	@commands.default_member_permissions(manage_guild=True, moderate_members=True)
+
 	async def set(
 		self,
 		inter:disnake.GuildCommandInteraction,
@@ -1046,6 +1048,8 @@ class Confessions(commands.Cog):
 
 	@commands.guild_only()
 	@commands.slash_command()
+	@commands.default_member_permissions(manage_guild=True, moderate_members=True)
+
 	async def shuffle(
 		self,
 		inter:disnake.GuildCommandInteraction
@@ -1099,6 +1103,8 @@ class Confessions(commands.Cog):
 
 	@commands.guild_only()
 	@commands.slash_command(aliases=['ban'])
+	@commands.default_member_permissions(manage_guild=True, moderate_members=True)
+
 	async def block(
 		self,
 		inter:disnake.GuildCommandInteraction,
@@ -1151,6 +1157,7 @@ class Confessions(commands.Cog):
 
 	@commands.guild_only()
 	@commands.slash_command()
+	@commands.default_member_permissions(manage_guild=True, moderate_members=True)
 	async def botmod(
 		self,
 		inter:disnake.GuildCommandInteraction,
