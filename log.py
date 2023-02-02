@@ -9,6 +9,8 @@ from typing import Union
 import disnake
 from disnake.ext import commands
 
+from datetime import datetime, timezone, timedelta
+
 class Log(commands.Cog):
   """ Record messages, commands and errors to file or a discord channel """
   def __init__(self, bot:commands.Bot):
@@ -26,21 +28,22 @@ class Log(commands.Cog):
     if self.bot.config['log']['logchannel'].isdigit():
       self.logchannel = await self.bot.fetch_channel(int(self.bot.config['log']['logchannel']))
 
-  def truncate(self, string:str, maxlen:int=200):
+  def truncate(self, string:str, maxlen:int=80):
     """ trim a long string and add ellipsis """
     return string[:maxlen] + ('...' if len(string) > maxlen else '')
 
   def wrap(self, content:str, author:disnake.User, channel:disnake.abc.Messageable):
     """ Format log data consistently """
+    dt = datetime.now(timezone(timedelta(hours = 7))).strftime("%Y-%m-%d %H:%M:%S")
     if isinstance(channel, disnake.TextChannel):
-      return f"[{self.truncate(channel.guild.name, 10)}#{self.truncate(channel.name, 20)}] {str(author.id)} ({self.truncate(author.name, 10)}#{author.discriminator}): {self.truncate(content)}"
+      return f"{str(dt)}, [{self.truncate(channel.guild.name, 10)}#{self.truncate(channel.name, 20)}], {str(author.id)}, {self.truncate(author.name, 10)}#{author.discriminator}, {self.truncate(content)}"
     if isinstance(channel, disnake.DMChannel):
       if channel.recipient:
-        return f"[DM({self.truncate(channel.recipient.name, 10)}#{channel.recipient.discriminator})] {str(author.id)} ({self.truncate(author.name, 10)}#{author.discriminator}): {self.truncate(content)}"
-      return f"[DM] {str(author.id)} ({self.truncate(author.name, 10)}#{author.discriminator}): {self.truncate(content)}"
+        return f"{str(dt)}, [DM({self.truncate(channel.recipient.name, 10)}#{channel.recipient.discriminator})], {str(author.id)}, {author.name}#{author.discriminator}, {self.truncate(content)}"
+      return f"{str(dt)}, [DM], {str(author.id)}, {self.truncate(author.name, 10)}#{author.discriminator}, {self.truncate(content)}"
     if isinstance(channel, disnake.Thread):
-      return f"[Thread] {str(author.id)} ({self.truncate(author.name, 10)}#{author.discriminator}): {self.truncate(content)}"
-    return f"[Unknown] {str(author.id)} ({self.truncate(author.name, 10)}#{author.discriminator}): {self.truncate(content)}"
+      return f"{str(dt)}, [Thread], {str(author.id)}, {self.truncate(author.name, 10)}#{author.discriminator}, {self.truncate(content)}"
+    return f"{str(dt)}, [Unknown], {str(author.id)}, {self.truncate(author.name, 10)}#{author.discriminator}, {self.truncate(content)}"
 
   @commands.Cog.listener('on_command')
   async def log_command(self, ctx:commands.Context):

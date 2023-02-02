@@ -36,7 +36,6 @@ class Admin(commands.Cog):
 
   @commands.Cog.listener("on_message")
   @commands.default_member_permissions(manage_guild=True, moderate_members=True)
-
   async def janitor_autodelete(self, message):
     """janitor service, deletes messages after 30 seconds"""
     if f"{message.channel.id}_janitor" in self.bot.config['admin']:
